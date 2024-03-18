@@ -1,0 +1,145 @@
+{% extends 'base_generic.html' %}
+{% block content %}
+{% load static %}
+  <script type="text/javascript" src="{% static 'js/tournament.js' %}"></script>
+
+
+  	{# HEADER #}
+
+    <div class="row mb-1 mt-3">
+      	<div class="col-sm-12 text-center">
+			<h1><u>{{ tournament.name|upper }}</u></h1> <i>refcode: <b>{{ tournament.reference_code }}</b></i>
+			
+		</div>
+	</div>
+    <div class="row mb-3 align-items-center">
+		{% if tournament.status == 'w' and owner and tournament.players.count > 1 or joined_as %}
+		<div class="col-sm-6 text-center" >
+		{% else %}
+		<div class="col-sm-12 text-center" >
+		{% endif %}
+			<i class="status-{{ tournament.status }}">
+				{% if tournament.winner %}
+					 Tournament Champion: {{ tournament.winner }}
+				{% else %}
+					{{ tournament.get_status_display }}
+				{% endif %}
+			</i>
+		</div>
+
+		{% if tournament.status != 'c' %}
+		<div class="col-sm-6 text-center" >
+			{% if owner and tournament.players.count > 1 and tournament.status == 'w'%}
+				<form action="" method="post" id="startTournament">
+					{% csrf_token %}
+						<input type="hidden" name="form" value="start">
+					<input type="submit" class="btn btn-outline-success" value="Start Tournament">
+				</form>
+			{% else %}
+				{% if joined_as %}
+				<i>Joined as <b class="sess_player">{{ joined_as }}</b></i>
+				{% endif %}
+			{% endif %}
+		</div>
+		{% endif %}
+	</div>
+	<hr>
+
+
+
+	{# PLAYER FORM / TOURNAMENT AUTH #}
+
+	{% if authform %}
+		<div class="row align-items-center mt-2">
+	    	<div class="col-sm-12 text-center">
+					<i> Enter Tournament Password to Join: </i>
+					<form action="" method="post" autocomplete="off" class="" id="playerForm">
+		    			{% csrf_token %}
+		    			<div class="form-group">
+		    				<input type="hidden" name="form" value="authJoin">
+							{{ authform.password }}
+						</div>
+						<input type="submit" class="btn btn-outline-info btn-sm" value="Enter" >
+		    			<p class="error mt-2" id="err"></p>
+					</form>
+			</div>
+		</div>
+	{% else %}
+		{% if playerform %}
+	    <div class="row align-items-center mt-2">
+	    	<div class="col-sm-12 text-center">
+					<i> Tournament Signup: </i>
+					<form action="" method="post" autocomplete="off" class="" id="playerForm">
+		    			{% csrf_token %}
+		    			<div class="form-group">
+		    				<input type="hidden" name="form" value="signup">
+							{{ playerform.player_name }}
+						</div>
+						<input type="submit" class="btn btn-outline-info btn-sm" value="Join" >
+		    			<p class="error mt-2" id="err"></p>
+					</form>
+			</div>
+		</div>
+		{% endif %}
+	{% endif %}
+
+
+
+	{# PLAYER LIST #}
+
+	{% if tournament.status == 'w' %}
+	<div class="row mt-2 mb-2">
+		<div class="col-sm-12 " id="PlayerList">
+			<table class="table table-striped">
+			    <thead>
+			      <tr>
+			        <th>Players</th>
+			      </tr>
+			    </thead>
+			    <tbody>
+					{% for player in tournament.players.all %}
+						<tr>
+							<td {% if player.name == joined_as %}class="sess_player"{%endif%}>{{ player.name }}</td>
+						</tr>
+					{% endfor %}  
+			    </tbody>
+		  	</table>
+		</div>
+	</div>
+
+
+
+	{# TOURNAMENT #}
+
+	{% else %}
+    <div class="row">
+		{% widthratio 12 tournament.rounds.count 1 as rcount %}
+		{% for round in tournament.rounds.all reversed %}
+			<div class="col-sm-{{ rcount }}" id="Round_{{ round.index }}">
+			<b><u> Round {{ round.index}} </u></b>
+			{% for match in round.matches.all %}	
+				<table class="table table-striped table-bordered tmt">
+				    <thead>
+				      <tr>
+				      </tr>
+				    </thead>
+				    <tbody>
+						{% for player in match.players.all %}
+							<tr>
+								{% if player.name == match.winner.name %}
+									<td class="winrar {% if player.name == joined_as %}sess_player{%endif%}">{{ player.name }}</td>
+								{% elif match.winner %}
+									<td class="loser {% if player.name == joined_as %}sess_player{%endif%}">{{ player.name }}</td>
+								{% else %}
+									<td class="{% if player.name == joined_as %}sess_player{%endif%}{% if owner %} select " onclick="declare('{{match.id}}', '{{player.name}}', '{{ csrf_token }}')"{% else %} " {% endif %}>{{ player.name }}</td>
+								{% endif %}
+							</tr>
+						{% endfor %}  
+				    </tbody>
+			  	</table>
+			 {% endfor %}	
+			</div>
+		{% endfor %}
+	</div>
+	{% endif %}
+{% endblock %}

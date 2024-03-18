@@ -1,0 +1,32 @@
+{% extends "base_generic.html" %}
+{% block content %}
+<<<<<<< HEAD
+
+<div align="center">
+
+			<h1>Update Profile</h1>
+			<p>If you would not like to update a certain field, leave it blank!</p>
+			<form action="" method="post">
+	    		{% csrf_token %}
+	    		<table align="center">
+	    			{{ form.as_table }}
+	    		</table>
+				<input type="submit" class="account btn-outline-success btn btn-sm" value="Submit">
+			</form>
+=======
+<div class="row mb-3">
+<div class="col-sm-12 text-center">
+	<h1>Update Profile</h1>
+	<p>If you would not like to update a certain field, leave it blank!</p>
+	<form action="" method="post">
+	    {% csrf_token %}
+	    <table>
+	    	{{ form }}
+	    </table>
+	    <br>
+		<input type="submit" class="account btn-outline-success btn btn-sm" value="Submit">
+	</form>
+</div>
+>>>>>>> master
+</div>
+{% endblock %}
