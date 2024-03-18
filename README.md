@@ -1,10 +1,8 @@
-# Bracket-Boys
+# Brackets
 
-[ Bracket-Boys ] is a tournament creation and management site. It is built using the Django web framework. 
+[ Brackets ] is a tournament creation and management site. It is built using the Django web framework. 
 
 Users and non-users alike can create new tournaments and add any quantity of participants. Additionally, users from a different device can join and participate in the tournament if they have the tournament's reference code. When starting the tournament, a tournament bracket will generate and the tournament host can choose who wins and loses paired matches, until a final champion is chosen.
-
-IP Address: http://138.68.50.33/
 
 The backend software stack is:
 
