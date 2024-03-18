@@ -1,0 +1,34 @@
+{% extends 'base_generic.html' %}
+{% block content %}
+{% load static %}
+
+<div class="row">
+	<div class="col text-center index">
+		
+		<form action="" method="post" id="createTournament" autocomplete="off">
+		    {% csrf_token %}
+		    <input type="hidden" name="form" value="create">
+		    <i>Create Tournament:</i>
+		    <div class="mb-2">
+		    {{ createform.tournament_name }} {{ createform.tournament_password }}
+			</div>
+			<input type="submit" class='btn btn-sm btn-outline-info' value="create">
+
+		</form>
+
+		<br>
+
+		<form action="" method="post" id="joinTournament" autocomplete="off">
+		    {% csrf_token %}
+		    <i>Join Tournament:</i>
+		    <br>
+		    <input type="hidden" name="form" value="join">
+		    {{ joinform.reference_code }}
+
+			<input type="submit" class='btn btn-sm btn-outline-info' value="join">
+
+		    <p class="error mt-2" id="err"></p>
+		</form>
+	</div>
+</div>
+{% endblock %}
